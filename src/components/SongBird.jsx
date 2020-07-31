@@ -11,7 +11,7 @@ const SongBird = () => {
     const [levelData, setLevelData] = useState([]);
     const [secretBird, setSecretBird] = useState({});
     const [guessedBird, setGuessedBird] = useState({});
-    const [correctAnswerProvided, setCorrectAnswerProvided] = useState(undefined);
+    const [correctAnswerProvided, setCorrectAnswerProvided] = useState(false);
     const [guessedArray, setGuessedArray] = useState([]);
 
     const winPlay = useRef();
@@ -36,12 +36,14 @@ const SongBird = () => {
     const handleAnswerProvided = (event) => {
         const { bird } = event.target.dataset;
         setGuessedBird(levelData.filter((element) => element.name === bird)[0]);
-        if (event.target.dataset.bird === secretBird.name) {
+
+        if (!correctAnswerProvided && event.target.dataset.bird === secretBird.name) {
             setCorrectAnswerProvided(true);
             winPlay.current.pause();
             winPlay.current.currentTime = 0;
             winPlay.current.play();
-        } else {
+        } else if (!correctAnswerProvided) {
+            setGuessedBird(levelData.filter((element) => element.name === bird)[0]);
             setCorrectAnswerProvided(false);
             setGuessedArray((prevState) => [...prevState, bird]);
             errorPlay.current.pause();
