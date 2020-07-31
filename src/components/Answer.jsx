@@ -5,16 +5,20 @@ import PlayPause from './PlayPause';
 
 const { Volume, SeekBar, CurrentTime, Duration } = controls;
 
-const Answer = ({ bird, sidePanel }) => {
+const Answer = ({ bird, sidePanel, correctAnswerProvided }) => {
     return (
         <>
             <img
                 className="quiz__answer-image"
-                src={Object.keys(bird).length ? bird.image : '/assets/img/start-bird.jpg'}
-                alt="start-bird"
+                src={
+                    !correctAnswerProvided && !sidePanel ? '/assets/img/start-bird.jpg' : bird.image
+                }
+                alt="bird"
             />
             <div className="quiz__answer-example">
-                <div className="name">{Object.keys(bird).length ? bird.name : '******'}</div>
+                <div className="name">
+                    {!correctAnswerProvided && !sidePanel ? '******' : bird.name}
+                </div>
                 {sidePanel && Object.keys(bird).length && (
                     <div className="species">{bird.species}</div>
                 )}
@@ -53,9 +57,11 @@ Answer.propTypes = {
         audio: PropTypes.string,
     }),
     sidePanel: PropTypes.bool.isRequired,
+    correctAnswerProvided: PropTypes.bool,
 };
 Answer.defaultProps = {
     bird: {},
+    correctAnswerProvided: false,
 };
 
 export default Answer;

@@ -6,6 +6,8 @@ import StartPhrase from './StartPhrase';
 import birdsData from '../birdsData';
 import './SongBird.scss';
 
+const MAX_LEVEL = 6;
+
 const SongBird = () => {
     const [level, setLevel] = useState(0);
     const [levelData, setLevelData] = useState([]);
@@ -25,13 +27,32 @@ const SongBird = () => {
         return Math.floor(Math.random() * 6);
     };
 
-    useEffect(() => {
-        setLevel(0);
-        setLevelData(shuffle(birdsData[0].slice(0)));
-        setSecretBird(birdsData[0][randomNumber()]);
+    const handleNewLevel = () => {
+        if (correctAnswerProvided) {
+            if (level < MAX_LEVEL) {
+                setLevel(level + 1);
+            } else {
+                console.log('win');
+            }
+        }
+    };
+
+    const clearData = () => {
+        setLevelData(shuffle(birdsData[level].slice(0)));
+        setSecretBird(birdsData[level][randomNumber()]);
         setGuessedBird({});
         setGuessedArray([]);
+        setCorrectAnswerProvided(false);
+    };
+
+    useEffect(() => {
+        setLevel(0);
+        clearData();
     }, []);
+
+    useEffect(() => {
+        clearData();
+    }, [level]);
 
     const handleAnswerProvided = (event) => {
         const { bird } = event.target.dataset;
@@ -57,7 +78,11 @@ const SongBird = () => {
             <Header level={level} />
             <main className="quiz">
                 <div className="quiz__answer">
-                    <Answer sidePanel={false} />
+                    <Answer
+                        bird={secretBird}
+                        sidePanel={false}
+                        correctAnswerProvided={correctAnswerProvided}
+                    />
                 </div>
                 <div className="quiz__question">
                     <div className="quiz__question-selection">
@@ -100,7 +125,13 @@ const SongBird = () => {
                         )}
                     </div>
                 </div>
-                <button type="button">Next level</button>
+                <button
+                    type="button"
+                    className={correctAnswerProvided ? 'next-level' : undefined}
+                    onClick={handleNewLevel}
+                >
+                    Next level
+                </button>
             </main>
             <audio ref={winPlay} src="/assets/audio/win.mp3" type="audio/mpeg">
                 <track kind="captions" />
