@@ -37,7 +37,7 @@ const PlayPause = ({ media, className }) => {
 
 PlayPause.propTypes = {
     className: PropTypes.string.isRequired,
-    media: PropTypes.objectOf(PropTypes.string).isRequired,
+    media: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
 };
 
 export default withMediaProps(PlayPause);

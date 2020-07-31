@@ -4,9 +4,11 @@ import Header from './Header';
 import Answer from './Answer';
 import StartPhrase from './StartPhrase';
 import birdsData from '../birdsData';
+import GameEnd from './GameEnd';
 import './SongBird.scss';
 
-const MAX_LEVEL = 6;
+const MAX_LEVEL = 5;
+const MAX_SCORE = 5;
 
 const SongBird = () => {
     const [level, setLevel] = useState(0);
@@ -15,6 +17,8 @@ const SongBird = () => {
     const [guessedBird, setGuessedBird] = useState({});
     const [correctAnswerProvided, setCorrectAnswerProvided] = useState(false);
     const [guessedArray, setGuessedArray] = useState([]);
+    const [score, setScore] = useState(0);
+    const [isGameEnded, setIsGameEnded] = useState(false);
 
     const winPlay = useRef();
     const errorPlay = useRef();
@@ -32,7 +36,7 @@ const SongBird = () => {
             if (level < MAX_LEVEL) {
                 setLevel(level + 1);
             } else {
-                console.log('win');
+                setIsGameEnded(true);
             }
         }
     };
@@ -46,13 +50,28 @@ const SongBird = () => {
     };
 
     useEffect(() => {
+        console.log(secretBird.name);
+    }, [secretBird]);
+
+    useEffect(() => {
         setLevel(0);
+        setScore(0);
         clearData();
     }, []);
 
     useEffect(() => {
         clearData();
     }, [level]);
+
+    const increaseScore = () => {
+        if (guessedArray.length === 0) {
+            setScore(score + 5);
+        } else if (guessedArray.length === 6) {
+            setScore(score + 0);
+        } else {
+            setScore(score + MAX_SCORE - guessedArray.length);
+        }
+    };
 
     const handleAnswerProvided = (event) => {
         const { bird } = event.target.dataset;
@@ -63,82 +82,97 @@ const SongBird = () => {
             winPlay.current.pause();
             winPlay.current.currentTime = 0;
             winPlay.current.play();
+            increaseScore();
         } else if (!correctAnswerProvided) {
-            setGuessedBird(levelData.filter((element) => element.name === bird)[0]);
             setCorrectAnswerProvided(false);
-            setGuessedArray((prevState) => [...prevState, bird]);
+            if (!guessedArray.includes(bird)) {
+                setGuessedArray((prevState) => [...prevState, bird]);
+            }
             errorPlay.current.pause();
             errorPlay.current.currentTime = 0;
             errorPlay.current.play();
         }
     };
 
+    useEffect(() => {
+        console.log(guessedArray);
+    }, [guessedArray]);
+
+    const handleNewGame = () => {
+        setIsGameEnded(false);
+        clearData();
+    };
+
     return (
         <>
-            <Header level={level} />
-            <main className="quiz">
-                <div className="quiz__answer">
-                    <Answer
-                        bird={secretBird}
-                        sidePanel={false}
-                        correctAnswerProvided={correctAnswerProvided}
-                    />
-                </div>
-                <div className="quiz__question">
-                    <div className="quiz__question-selection">
-                        <ul>
-                            {levelData.length &&
-                                levelData.map((data) => {
-                                    return (
-                                        <li
-                                            key={data.id}
-                                            data-bird={data.name}
-                                            onClick={handleAnswerProvided}
-                                        >
-                                            <span
-                                                className={clsx(
-                                                    'indicator',
-                                                    correctAnswerProvided &&
-                                                        data.name === secretBird.name &&
-                                                        'green',
-                                                    guessedArray.includes(data.name) && 'red'
-                                                )}
-                                            />
-                                            {data.name}
-                                        </li>
-                                    );
-                                })}
-                        </ul>
+            <Header level={level} score={score} />
+            {isGameEnded ? (
+                <GameEnd score={score} handleNewGame={handleNewGame} />
+            ) : (
+                <main className="quiz">
+                    <div className="quiz__answer">
+                        <Answer
+                            bird={secretBird}
+                            sidePanel={false}
+                            correctAnswerProvided={correctAnswerProvided}
+                        />
                     </div>
+                    <div className="quiz__question">
+                        <div className="quiz__question-selection">
+                            <ul>
+                                {levelData.length &&
+                                    levelData.map((data) => {
+                                        return (
+                                            <li
+                                                key={data.id}
+                                                data-bird={data.name}
+                                                onClick={handleAnswerProvided}
+                                            >
+                                                <span
+                                                    className={clsx(
+                                                        'indicator',
+                                                        correctAnswerProvided &&
+                                                            data.name === secretBird.name &&
+                                                            'green',
+                                                        guessedArray.includes(data.name) && 'red'
+                                                    )}
+                                                />
+                                                {data.name}
+                                            </li>
+                                        );
+                                    })}
+                            </ul>
+                        </div>
 
-                    <div className="quiz__question-example">
-                        {Object.keys(guessedBird).length ? (
-                            <>
-                                <div className="bird">
-                                    <Answer bird={guessedBird} sidePanel />
-                                </div>
+                        <div className="quiz__question-example">
+                            {Object.keys(guessedBird).length ? (
+                                <>
+                                    <div className="bird">
+                                        <Answer bird={guessedBird} sidePanel />
+                                    </div>
 
-                                <p className="description">{guessedBird.description}</p>
-                            </>
-                        ) : (
-                            <StartPhrase />
-                        )}
+                                    <p className="description">{guessedBird.description}</p>
+                                </>
+                            ) : (
+                                <StartPhrase />
+                            )}
+                        </div>
                     </div>
-                </div>
-                <button
-                    type="button"
-                    className={correctAnswerProvided ? 'next-level' : undefined}
-                    onClick={handleNewLevel}
-                >
-                    Next level
-                </button>
-            </main>
-            <audio ref={winPlay} src="/assets/audio/win.mp3" type="audio/mpeg">
-                <track kind="captions" />
-            </audio>
-            <audio ref={errorPlay} src="/assets/audio/error.mp3" type="audio/mpeg">
-                <track kind="captions" />
-            </audio>
+                    <button
+                        type="button"
+                        className={correctAnswerProvided ? 'next-level' : undefined}
+                        onClick={handleNewLevel}
+                    >
+                        Next level
+                    </button>
+                    <audio ref={winPlay} src="/assets/audio/win.mp3" type="audio/mpeg">
+                        <track kind="captions" />
+                    </audio>
+                    <audio ref={errorPlay} src="/assets/audio/error.mp3" type="audio/mpeg">
+                        <track kind="captions" />
+                    </audio>
+                </main>
+            )}
             <footer />
         </>
     );

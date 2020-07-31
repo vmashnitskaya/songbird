@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-const Header = ({ level }) => {
+const Header = ({ level, score }) => {
     const headings = [
         'Разминка',
         'Воробьиные',
@@ -15,7 +15,7 @@ const Header = ({ level }) => {
         <header>
             <div className="presentation">
                 <img src="/assets/img/logo.svg" alt="logo" className="presentation__logo" />
-                <h3 className="presentation__score">Score: 0</h3>
+                <h3 className="presentation__score">Score: {score}</h3>
             </div>
             <ul className="selection">
                 {headings.map((heading, index) => {
@@ -35,6 +35,7 @@ const Header = ({ level }) => {
 
 Header.propTypes = {
     level: PropTypes.number.isRequired,
+    score: PropTypes.number.isRequired,
 };
 
 export default Header;
