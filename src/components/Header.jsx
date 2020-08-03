@@ -6,7 +6,7 @@ const Header = ({ level, score }) => {
     const headings = [
         'Разминка',
         'Воробьиные',
-        'Лесные птицы',
+        `Лесные птицы`,
         'Певчие птицы',
         'Хищные птицы',
         'Морские птицы',
@@ -24,7 +24,7 @@ const Header = ({ level, score }) => {
                             key={heading}
                             className={clsx('selection__item', level === index && 'active')}
                         >
-                            {heading}
+                            {heading.replace(/ /g, '\u00a0')}
                         </li>
                     );
                 })}

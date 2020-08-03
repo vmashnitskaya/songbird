@@ -50,7 +50,7 @@ const SongBird = () => {
     };
 
     useEffect(() => {
-        console.log(secretBird.name);
+        console.log(`Correct answer for level ${level + 1} is ${secretBird.name}`);
     }, [secretBird]);
 
     useEffect(() => {
@@ -93,10 +93,6 @@ const SongBird = () => {
             errorPlay.current.play();
         }
     };
-
-    useEffect(() => {
-        console.log(guessedArray);
-    }, [guessedArray]);
 
     const handleNewGame = () => {
         setIsGameEnded(false);
