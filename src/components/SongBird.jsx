@@ -159,7 +159,7 @@ const SongBird = () => {
                         className={correctAnswerProvided ? 'next-level' : undefined}
                         onClick={handleNewLevel}
                     >
-                        Next level
+                        {level < 5 ? 'Next level' : 'Finish quiz'}
                     </button>
                     <audio ref={winPlay} src="/assets/audio/win.mp3" type="audio/mpeg">
                         <track kind="captions" />
