@@ -50,7 +50,9 @@ const SongBird = () => {
     };
 
     useEffect(() => {
-        console.log(`Correct answer for level ${level + 1} is ${secretBird.name}`);
+        if (Object.keys(secretBird).length) {
+            console.log(`Correct answer for level ${level + 1} is ${secretBird.name}`);
+        }
     }, [secretBird]);
 
     useEffect(() => {
