@@ -98,6 +98,8 @@ const SongBird = () => {
 
     const handleNewGame = () => {
         setIsGameEnded(false);
+        setLevel(0);
+        setScore(0);
         clearData();
     };
 
