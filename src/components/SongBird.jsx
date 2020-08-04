@@ -17,8 +17,8 @@ const SongBird = () => {
     const [guessedBird, setGuessedBird] = useState({});
     const [correctAnswerProvided, setCorrectAnswerProvided] = useState(false);
     const [guessedArray, setGuessedArray] = useState([]);
-    const [score, setScore] = useState(30);
-    const [isGameEnded, setIsGameEnded] = useState(true);
+    const [score, setScore] = useState(0);
+    const [isGameEnded, setIsGameEnded] = useState(false);
 
     const winPlay = useRef();
     const errorPlay = useRef();
@@ -57,7 +57,7 @@ const SongBird = () => {
 
     useEffect(() => {
         setLevel(0);
-        setScore(30);
+        setScore(0);
         clearData();
     }, []);
 
