@@ -9,21 +9,7 @@ const GameEnd = ({ score, handleNewGame }) => {
             {score === 30 ? (
                 <>
                     <h2>Абсолютная победа: 30 из 30 баллов.</h2>
-                    <div className="bird-container bird-container--one">
-                        <div className="bird-animation bird-animation--one" />
-                    </div>
-
-                    <div className="bird-container bird-container--two">
-                        <div className="bird-animation bird-animation--two" />
-                    </div>
-
-                    <div className="bird-container bird-container--three">
-                        <div className="bird-animation bird-animation--three" />
-                    </div>
-
-                    <div className="bird-container bird-container--four">
-                        <div className="bird-animation bird-animation--four" />
-                    </div>
+                    <img className="win-image" src="/assets/img/win.svg" alt="win" />
                 </>
             ) : (
                 <h2>Вы прошли викторину и набрали {score} из 30 возможных баллов</h2>
